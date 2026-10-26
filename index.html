@@ -27,7 +27,7 @@
   @keyframes g { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .spin { animation-duration: 3s; } #splash { transition: none; } }
   a.btn { display: inline-block; background: var(--sand); color: #1b2a2e; font-weight: 700; text-decoration: none; padding: 12px 18px; border-radius: 10px; }
-  #ayuda[hidden] { display: none; }
+  [hidden] { display: none !important; }
 </style>
 </head>
 <body>
@@ -43,7 +43,7 @@
 </div>
 <iframe id="app" title="Hacienda Santa Elena" allow="clipboard-write" referrerpolicy="no-referrer-when-downgrade"></iframe>
 <script>
-  const APP_URL = 'PEGA_AQUI_TU_URL_EXEC';
+  const APP_URL = 'https://script.google.com/macros/s/AKfycbyX0qYxZu8rHSxKW18c0xhxYjlB5EuY329SJ7gu75SagXy7B7AJrXyTXdtT6arq8hsl/exec';
 
   const $ = id => document.getElementById(id);
   const ayuda = texto => { if (texto) $('msg').textContent = texto; $('spin').hidden = true; $('ayuda').hidden = false; };

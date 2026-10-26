@@ -1,6 +1,6 @@
 // Guarda la carcasa (pantalla de inicio e íconos) para que la app se pueda instalar y abra rápido.
 // Los datos no se guardan aquí: siempre vienen en vivo desde Apps Script.
-const CACHE = 'santa-elena-v1';
+const CACHE = 'santa-elena-v2';
 const ARCHIVOS = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png', 'favicon-64.png'];
 
 self.addEventListener('install', e => {

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hacienda Santa Elena</title>
+<meta name="theme-color" content="#0d5b63">
+<meta name="description" content="Administración de la casa compartida: cuotas, estadías, luz y agua.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Santa Elena">
+<style>
+  /* Pega aquí abajo, en APP_URL, el enlace /exec de tu aplicación web de Apps Script */
+  :root { --teal: #0d5b63; --deep: #0d1517; --sand: #e9c46a; --ink: #e3ecee; --mut: #9fcfd4; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: var(--deep); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body { padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
+  iframe { display: block; width: 100%; height: 100%; border: 0; background: var(--deep); }
+  #splash { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: var(--teal); text-align: center; padding: 24px; transition: opacity .35s; z-index: 2; }
+  #splash img { width: 112px; height: 112px; }
+  #splash h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: .01em; }
+  #splash p { margin: 0; color: var(--mut); font-size: 14px; max-width: 30em; line-height: 1.45; }
+  #splash.oculto { opacity: 0; pointer-events: none; }
+  .spin { width: 30px; height: 30px; border: 3px solid rgba(255, 255, 255, .25); border-top-color: var(--sand); border-radius: 50%; animation: g 1s linear infinite; }
+  @keyframes g { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spin { animation-duration: 3s; } #splash { transition: none; } }
+  a.btn { display: inline-block; background: var(--sand); color: #1b2a2e; font-weight: 700; text-decoration: none; padding: 12px 18px; border-radius: 10px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div id="splash">
+  <img src="icon-512.png" alt="">
+  <h1>Hacienda Santa Elena</h1>
+  <div class="spin" id="spin" aria-label="Cargando"></div>
+  <div id="ayuda" hidden>
+    <p id="msg">La app está tardando en abrir. La primera vez, Google te pide autorizarla en el navegador; después ya abre desde aquí.</p>
+    <p style="margin-top:14px"><a class="btn" id="abrir" target="_blank" rel="noopener">Abrir y autorizar en el navegador</a></p>
+    <p style="margin-top:10px">Cuando termines, vuelve aquí y cierra y abre la app.</p>
+  </div>
+</div>
+<iframe id="app" title="Hacienda Santa Elena" allow="clipboard-write" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<script>
+  const APP_URL = 'https://script.google.com/macros/s/AKfycbyX0qYxZu8rHSxKW18c0xhxYjlB5EuY329SJ7gu75SagXy7B7AJrXyTXdtT6arq8hsl/exec';
+
+  const $ = id => document.getElementById(id);
+  const ayuda = texto => { if (texto) $('msg').textContent = texto; $('spin').hidden = true; $('ayuda').hidden = false; };
+  if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(APP_URL)) {
+    ayuda('Falta configurar el enlace de la app. Edita index.html y pega en APP_URL el enlace /exec de Apps Script.');
+    $('abrir').hidden = true;
+  } else {
+    $('abrir').href = APP_URL;
+    let lista = false;
+    window.addEventListener('message', e => {
+      if (!/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
+      const d = e.data || {};
+      if (d.hse === 'ok') { lista = true; $('splash').classList.add('oculto'); }
+      if (d.hse === 'err') ayuda(d.msg || 'La app no pudo abrir.');
+    });
+    $('app').src = APP_URL;
+    setTimeout(() => { if (!lista) ayuda(); }, 12000);
+  }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
